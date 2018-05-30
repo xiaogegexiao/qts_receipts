@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">QtsReceipts</string>
+    <string name="title_receipt_list">Receipt list</string>
+</resources>
