@@ -1,27 +1,39 @@
-package com.qtsreceipts
+package com.qtsreceipts.ui.activity
 
 import android.app.FragmentTransaction
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v7.widget.Toolbar
 import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
+import com.qtsreceipts.ui.fragments.BaseFragment
+import com.qtsreceipts.ui.fragments.ReceiptsListFragment
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity
+import dagger.android.AndroidInjection
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.HasSupportFragmentInjector
 import receipts.qts.com.qtsreceipts.R
+import javax.inject.Inject
 
-class MainActivity : RxAppCompatActivity() {
+class MainActivity : RxAppCompatActivity(), HasSupportFragmentInjector {
+    override fun supportFragmentInjector(): AndroidInjector<Fragment> {
+        return dispatchingFragmentInjector
+    }
+
     companion object {
         const val FRAGMENT_ROOT = "mainRootFragment"
     }
 
     var mRootFragment: BaseFragment? = null
-        get() = fragmentManager.findFragmentByTag(FRAGMENT_ROOT) as BaseFragment
+        get() = supportFragmentManager.findFragmentByTag(FRAGMENT_ROOT) as BaseFragment
         set(value) {
             field = value
             if (field != null) {
                 popAllFragments()
-                fragmentManager.beginTransaction()
+                supportFragmentManager.beginTransaction()
                         .replace(R.id.content_frame, field, FRAGMENT_ROOT)
                         .commit()
             }
@@ -34,6 +46,9 @@ class MainActivity : RxAppCompatActivity() {
     override fun setTitle(title: CharSequence?) {
         mActionBarTitleTextView.text = title?.toString()?.toUpperCase()
     }
+
+    @Inject
+    lateinit var dispatchingFragmentInjector: DispatchingAndroidInjector<Fragment>
 
     @BindView(R.id.toolbar_actionbar)
     lateinit var mActionBarToolbar: Toolbar
@@ -48,6 +63,7 @@ class MainActivity : RxAppCompatActivity() {
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         ButterKnife.bind(this)
@@ -58,15 +74,15 @@ class MainActivity : RxAppCompatActivity() {
 
     fun popAllFragments() {
         if (isFinishing) return
-        if (fragmentManager.backStackEntryCount > 0) {
-            val firstItemId = fragmentManager.getBackStackEntryAt(0).id
-            fragmentManager.popBackStack(firstItemId, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            val firstItemId = supportFragmentManager.getBackStackEntryAt(0).id
+            supportFragmentManager.popBackStack(firstItemId, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
     }
 
     fun pushFragment(fragment: BaseFragment, tag: String) {
         if (isFinishing) return
-        fragmentManager
+        supportFragmentManager
                 .beginTransaction()
                 .setCustomAnimations(
                         fragment.getFragmentEnterAnim(),
@@ -82,9 +98,9 @@ class MainActivity : RxAppCompatActivity() {
 
     fun popFragment() {
         if (isFinishing) return
-        val count = fragmentManager.backStackEntryCount
+        val count = supportFragmentManager.backStackEntryCount
         if (count > 0) {
-            fragmentManager.popBackStack()
+            supportFragmentManager.popBackStack()
         } else {
             onBackPressed()
         }
@@ -94,7 +110,7 @@ class MainActivity : RxAppCompatActivity() {
         // Check if the current fragment wants to handle back presses
         var handled = false
 
-        if (fragmentManager.backStackEntryCount > 0 && !isFinishing) {
+        if (supportFragmentManager.backStackEntryCount > 0 && !isFinishing) {
             popFragment()
             handled = true
         }

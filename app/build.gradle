@@ -41,10 +41,18 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.9.1'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
-    implementation 'com.squareup.dagger:dagger:1.2.5'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
     kapt 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    // Dependency core dependencies
+    implementation "com.google.dagger:dagger:$daggerLibVersion"
+    kapt "com.google.dagger:dagger-compiler:$daggerLibVersion"
+
+    // Dagger Android dependencies
+    kapt "com.google.dagger:dagger-android-processor:$daggerLibVersion"
+    implementation "com.google.dagger:dagger-android-support:$daggerLibVersion"
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

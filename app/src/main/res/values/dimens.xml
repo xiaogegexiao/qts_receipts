@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <dimen name="section_height" >48dp</dimen>
+    <dimen name="section_title_text_margin" >20dp</dimen>
+    <dimen name="section_title_text_size" >16sp</dimen>
+    <dimen name="image_tile_height">160dp</dimen>
+    <dimen name="title_tile_height">80dp</dimen>
+</resources>
