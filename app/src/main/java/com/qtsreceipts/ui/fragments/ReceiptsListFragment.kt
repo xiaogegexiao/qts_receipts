@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -101,14 +102,14 @@ class ReceiptsListFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListene
 
     @SuppressLint("CheckResult")
     private fun fetchLatest() {
-        Observable.fromCallable { setProcessing(true)}
+        Observable.fromCallable { setProcessing(true) }
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .flatMap { mQtsRepository.getReceipts() }
                 .map { t ->
                     t.results
                 }
-                .doFinally { setProcessing(false) }
                 .observeOn(AndroidSchedulers.mainThread())
+                .doFinally { setProcessing(false) }
                 .compose(bindUntilEvent(FragmentEvent.PAUSE))
                 .subscribe({
                     mReceiptListAdapter.receiptList = it
